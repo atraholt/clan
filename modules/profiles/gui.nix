@@ -4,6 +4,7 @@
 }:
 {
   programs.kdeconnect.enable = true;
+  programs.vscode.package = pkgs.vscode;
   services = {
     displayManager = {
       sddm = {
