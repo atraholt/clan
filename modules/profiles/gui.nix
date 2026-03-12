@@ -4,7 +4,6 @@
 }:
 {
   programs.kdeconnect.enable = true;
-  programs.vscode.package = pkgs.vscode;
   services = {
     displayManager = {
       sddm = {
@@ -28,6 +27,7 @@
     wl-clipboard
     vesktop
     ghostty
+    vscode
   ];
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     #aurorae

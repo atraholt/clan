@@ -2,20 +2,11 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }:
 {
   home.file.".vscode-server/extensions".source = config.home.file.".vscode/extensions".source;
   programs.vscode.enable = true;
-  programs.vscode.package = lib.mkDefault (
-    pkgs.emptyDirectory
-    // {
-      pname = "vscode";
-      # Required for version check to generate extensions.json
-      version = "1.74.0";
-    }
-  );
   programs.vscode.mutableExtensionsDir = false;
   programs.vscode.profiles.default.extensions = [
     pkgs.vscode-extensions.eamodio.gitlens
@@ -43,7 +34,7 @@
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = lib.getExe pkgs.nil;
       "nix.serverSettings".nil.formatting.command = [
-        (lib.getExe inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.alejandra)
+        (lib.getExe pkgs.alejandra)
       ];
       "nix.serverSettings".nil.nix.flake.autoArchive = true;
 
