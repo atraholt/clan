@@ -12,6 +12,14 @@
     catppuccin = {
       enable = true;
       flavor = "mocha";
+      bat.enable = true;
+      btop.enable = true;
+      eza.enable = true;
+      ghostty.enable = true;
+      mangohud.enable = true;
+      vesktop.enable = true;
+      vscode.profiles.default.enable = true;
+      zellij.enable = true;
     };
     home.homeDirectory = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/audun" else "/home/audun";
     home.stateVersion = "26.05";

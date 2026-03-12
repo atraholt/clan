@@ -97,5 +97,6 @@
   catppuccin = {
     enable = true;
     flavor = "mocha";
+    sddm.enable = true;
   };
 }
