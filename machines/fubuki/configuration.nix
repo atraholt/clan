@@ -72,19 +72,26 @@ in
       ];
     };
   };
-  services.tlp = {
-    enable = true;
-    pd.enable = true;
-    settings = {
-      START_CHARGE_THRESH_BAT0 = 40;
-      STOP_CHARGE_THRESH_BAT0 = 90;
+  services = {
+    power-profiles-daemon.enable = lib.mkForce false;
+    tlp = {
+      enable = true;
+      pd.enable = true;
+      settings = {
+        START_CHARGE_THRESH_BAT0 = 40;
+        STOP_CHARGE_THRESH_BAT0 = 90;
+      };
     };
+    udev.extraRules = ''
+      # Allow all users to access ntsync.
+      KERNEL=="ntsync", MODE="0644"
+    '';
+    xserver.videoDrivers = [
+      "modesetting"
+      "nvidia"
+    ];
+    btrfs.autoScrub.enable = true;
   };
-  services.power-profiles-daemon.enable = lib.mkForce false;
-  services.udev.extraRules = ''
-    # Allow all users to access ntsync.
-    KERNEL=="ntsync", MODE="0644"
-  '';
   nixpkgs = {
     config.allowUnfree = true;
     config.nvidia.acceptLicense = true;
@@ -202,44 +209,47 @@ in
         inputs.nix-cachyos-kernel.overlay
       ];
   };
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-compute-runtime
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      libva-vdpau-driver
-      libvdpau-va-gl
-      nvidia-vaapi-driver
-    ];
+  hardware = {
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-compute-runtime
+        intel-media-driver # LIBVA_DRIVER_NAME=iHD
+        intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+        libva-vdpau-driver
+        libvdpau-va-gl
+        nvidia-vaapi-driver
+      ];
+    };
+    nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      powerManagement.enable = true;
+      powerManagement.finegrained = true;
+      open = lib.mkForce true;
+      prime = {
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
+        intelBusId = lib.mkDefault "PCI:0:2:0";
+        nvidiaBusId = lib.mkDefault "PCI:1:0:0";
+      };
+      modesetting.enable = true;
+      nvidiaPersistenced = true;
+      nvidiaSettings = false;
+    };
+    openrazer = {
+      enable = true;
+      users = [ "audun" ];
+    };
   };
   environment.systemPackages = (lib.optionals config.programs.steam.enable [ steam-offload ]) ++ [
     pkgs.nvtopPackages.full
     pkgs.clinfo
     pkgs.libva-utils
     pkgs.vdpauinfo
+    pkgs.openrazer-daemon
+    pkgs.polychromatic
   ];
-  services.xserver.videoDrivers = [
-    "modesetting"
-    "nvidia"
-  ];
-  hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
-    powerManagement.enable = true;
-    powerManagement.finegrained = true;
-    open = lib.mkForce true;
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
-      intelBusId = lib.mkDefault "PCI:0:2:0";
-      nvidiaBusId = lib.mkDefault "PCI:1:0:0";
-    };
-    modesetting.enable = true;
-    nvidiaPersistenced = true;
-    nvidiaSettings = false;
-  };
   networking.networkmanager.wifi.backend = "iwd";
-  services.btrfs.autoScrub.enable = true;
 }
