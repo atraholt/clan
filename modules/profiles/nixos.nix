@@ -3,6 +3,7 @@
   imports = [
     inputs.nix-index-database.nixosModules.nix-index
     inputs.home-manager.nixosModules.home-manager
+    inputs.catppuccin.nixosModules.catppuccin
   ];
   boot = {
     initrd.systemd.enable = true;
@@ -92,5 +93,9 @@
     algorithm = "zstd lz4 (type=huge)";
     memoryPercent = 100;
     priority = 100;
+  };
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
   };
 }

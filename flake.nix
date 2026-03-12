@@ -11,6 +11,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-casks.url = "github:atahanyorganci/nix-casks/archive";
     nix-gaming.url = "github:fufexan/nix-gaming";
+    catppuccin.url = "github:catppuccin/nix";
 
     #nixpkgs.follows = "clan-core/nixpkgs";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
@@ -26,6 +27,7 @@
     nix-casks.inputs.flake-parts.follows = "flake-parts";
     nix-gaming.inputs.nixpkgs.follows = "nixpkgs";
     nix-gaming.inputs.flake-parts.follows = "flake-parts";
+    catppuccin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
