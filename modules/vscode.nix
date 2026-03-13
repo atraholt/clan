@@ -5,7 +5,7 @@
   ...
 }:
 {
-  home-manager.users.audun.catppuccin.vscode.profiles.default.enable = true;
+  catppuccin.vscode.profiles.default.enable = true;
   home.file.".vscode-server/extensions".source = config.home.file.".vscode/extensions".source;
   programs.vscode.enable = true;
   programs.vscode.mutableExtensionsDir = false;

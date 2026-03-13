@@ -1,6 +1,6 @@
 { ... }:
 {
-  home-manager.users.audun.catppuccin.vesktop.enable = true;
+  catppuccin.vesktop.enable = true;
   programs.vesktop = {
     enable = true;
     settings = {
