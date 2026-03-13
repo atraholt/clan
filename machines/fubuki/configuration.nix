@@ -91,6 +91,7 @@ in
       "nvidia"
     ];
     btrfs.autoScrub.enable = true;
+    irqbalance.enable = true;
   };
   nixpkgs = {
     config.allowUnfree = true;

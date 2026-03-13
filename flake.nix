@@ -53,7 +53,6 @@
         ];
         perSystem =
           {
-            inputs',
             system,
             pkgs,
             ...

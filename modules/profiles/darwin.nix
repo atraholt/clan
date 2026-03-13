@@ -10,6 +10,13 @@
     inputs.home-manager.darwinModules.home-manager
     ../nix-casks.nix
   ];
+  nix.gc.interval = [
+    {
+      Weekday = 1;
+      Hour = 1;
+      Minute = 0;
+    }
+  ];
   environment.systemPackages = with pkgs; [
     android-tools
     appcleaner
