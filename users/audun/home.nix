@@ -9,6 +9,7 @@
       inputs.catppuccin.homeModules.catppuccin
       ../../modules/btop.nix
       ../../modules/ghostty.nix
+      ../../modules/nushell.nix
       ../../modules/vesktop.nix
       ../../modules/vivaldi.nix
       ../../modules/vscode.nix
@@ -21,8 +22,11 @@
       mangohud.enable = true;
       zellij.enable = true;
     };
+    home.shell.enablSshellIntegration = true;
     home.homeDirectory = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/audun" else "/home/audun";
     home.stateVersion = "26.05";
   };
-
+  users.users.audun = {
+    shell = pkgs.nushell;
+  };
 }
