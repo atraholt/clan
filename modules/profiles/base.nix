@@ -66,5 +66,4 @@
       "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBC7JOKqvy7mI8KfMfrOVUgpBrMvnpMeQd9QmgPI9P2eyhbqikYe0zkP98Lvc6MIDk1oH3JVrdS51PGQ99Ts0DxI= homelab@secretive.kubira.local"
     ];
   };
-  users.defaultUserShell = pkgs.zsh;
 }

@@ -27,6 +27,6 @@
     home.stateVersion = "26.05";
   };
   users.users.audun = {
-    shell = pkgs.nushell;
+    shell = pkgs.fish;
   };
 }
