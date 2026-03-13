@@ -7,6 +7,7 @@
   home-manager.users.audun = {
     imports = [
       inputs.catppuccin.homeModules.catppuccin
+      ../../modules/btop.nix
       ../../modules/vesktop.nix
       ../../modules/vivaldi.nix
       ../../modules/vscode.nix
@@ -15,7 +16,6 @@
       enable = true;
       flavor = "mocha";
       bat.enable = true;
-      btop.enable = true;
       eza.enable = true;
       ghostty.enable = true;
       mangohud.enable = true;
