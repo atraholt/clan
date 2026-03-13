@@ -7,8 +7,9 @@
   home-manager.users.audun = {
     imports = [
       inputs.catppuccin.homeModules.catppuccin
-      ../../modules/vscode.nix
       ../../modules/vesktop.nix
+      ../../modules/vivaldi.nix
+      ../../modules/vscode.nix
     ];
     catppuccin = {
       enable = true;

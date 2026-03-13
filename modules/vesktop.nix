@@ -1,5 +1,6 @@
-{ ... }:
+{ pkgs, ... }:
 {
+  environment.systemPackages = [ pkgs.vivaldi ];
   catppuccin.vesktop.enable = true;
   programs.vesktop = {
     enable = true;

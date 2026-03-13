@@ -22,16 +22,14 @@
     desktopManager.plasma6.enable = true;
   };
   environment.systemPackages = with pkgs; [
-    vivaldi
     libnotify
     wl-clipboard
-    vesktop
     ghostty
     vscode
   ];
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
     #aurorae
-    plasma-browser-integration
+    #plasma-browser-integration
     plasma-workspace-wallpapers
     konsole
     kwin-x11
