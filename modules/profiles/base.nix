@@ -17,11 +17,26 @@
       keep-derivations = true
     '';
     optimise.automatic = true;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      randomizedDelaySec = "1h";
-    };
+    gc = lib.mkMerge [
+      {
+        automatic = true;
+      }
+      (
+        if pkgs.stdenv.isDarwin then
+          {
+            interval = [
+              {
+                Weekday = 1;
+                Hour = 1;
+              }
+            ];
+          }
+        else
+          { }
+      )
+      (lib.mkIf pkgs.stdenv.isLinux { dates = "weekly"; })
+      (lib.mkIf pkgs.stdenv.isLinux { randomizedDelaySec = "1800"; })
+    ];
     settings = {
       max-jobs = 1;
       cores = 1;
