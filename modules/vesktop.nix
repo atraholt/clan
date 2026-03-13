@@ -6,6 +6,7 @@
     settings = {
       arRPC = true;
       autoStartMinimized = false;
+      customTitleBar = true;
       discordBranch = "stable";
       hardwareAcceleration = true;
       hardwareVideoAcceleration = true;
