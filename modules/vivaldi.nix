@@ -1,6 +1,5 @@
 { pkgs, ... }:
 {
-  environment.systemPackages = [ pkgs.vivaldi ];
   programs.chromium = {
     enable = true;
     package = pkgs.vivaldi;

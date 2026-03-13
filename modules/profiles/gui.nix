@@ -25,6 +25,8 @@
     libnotify
     wl-clipboard
     ghostty
+    vivaldi
+    vesktop
     vscode
   ];
   environment.plasma6.excludePackages = with pkgs.kdePackages; [
