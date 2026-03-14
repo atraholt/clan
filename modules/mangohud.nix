@@ -8,5 +8,4 @@
       preset = 0;
     };
   };
-  catppuccin.mangohud.enable = true;
 }

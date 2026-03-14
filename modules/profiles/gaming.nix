@@ -60,6 +60,7 @@
     faugus-launcher
     (self.packages.${pkgs.stdenv.hostPlatform.system}.xivlauncher-rb.override {
       useGameMode = true;
+      #useSteamRun = false;
       nvngxPath = "${config.hardware.nvidia.package}/lib/nvidia/wine";
     })
   ];
