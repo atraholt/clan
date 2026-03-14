@@ -9,6 +9,7 @@
       inputs.catppuccin.homeModules.catppuccin
       ../../modules/btop.nix
       ../../modules/ghostty.nix
+      ../../modules/mangohud.nix
       #../../modules/nushell.nix
       ../../modules/vesktop.nix
       ../../modules/vivaldi.nix
@@ -19,7 +20,6 @@
       flavor = "mocha";
       bat.enable = true;
       eza.enable = true;
-      mangohud.enable = true;
       zellij.enable = true;
     };
     home.shell.enableShellIntegration = true;
