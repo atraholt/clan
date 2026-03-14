@@ -223,7 +223,7 @@ in
       ];
     };
     nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
       powerManagement.enable = true;
       powerManagement.finegrained = true;
       open = lib.mkForce true;
