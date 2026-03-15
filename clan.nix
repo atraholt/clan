@@ -108,11 +108,6 @@
       #yggdrasil = {
       #  roles.default.tags.all = { };
       #};
-      tailscale = {
-        module.name = "@schallerclan/tailscale";
-        module.input = "self";
-        roles.default.tags = [ "nixos" ];
-      };
       internet = {
         roles.default.machines = {
           fubuki.settings.host = "192.168.1.122";
