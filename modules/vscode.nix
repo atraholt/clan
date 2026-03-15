@@ -9,18 +9,21 @@
   home.file.".vscode-server/extensions".source = config.home.file.".vscode/extensions".source;
   programs.vscode.enable = true;
   programs.vscode.mutableExtensionsDir = false;
-  programs.vscode.profiles.default.extensions = [
-    pkgs.vscode-extensions.eamodio.gitlens
-    pkgs.vscode-extensions.editorconfig.editorconfig
-    pkgs.vscode-extensions.mkhl.direnv
-    pkgs.vscode-extensions.shardulm94.trailing-spaces
-    pkgs.vscode-extensions.jnoortheen.nix-ide
-  ]
-  ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64 || pkgs.stdenv.hostPlatform.isDarwin) [
-    (pkgs.vscode-extensions.ms-python.python.override {
-      pythonUseFixed = true;
-    })
-  ];
+  programs.vscode.profiles.default.extensions =
+    with pkgs.vsode-extensions;
+    [
+      eamodio.gitlens
+      editorconfig.editorconfig
+      mkhl.direnv
+      shardulm94.trailing-spaces
+      jnoortheen.nix-ide
+      sumneko.lua
+    ]
+    ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64 || pkgs.stdenv.hostPlatform.isDarwin) [
+      (pkgs.vscode-extensions.ms-python.python.override {
+        pythonUseFixed = true;
+      })
+    ];
   programs.vscode.profiles.default.userSettings =
 
     {
