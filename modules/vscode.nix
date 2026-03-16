@@ -10,7 +10,7 @@
   programs.vscode.enable = true;
   programs.vscode.mutableExtensionsDir = false;
   programs.vscode.profiles.default.extensions =
-    with pkgs.vsode-extensions;
+    with pkgs.vscode-extensions;
     [
       eamodio.gitlens
       editorconfig.editorconfig
