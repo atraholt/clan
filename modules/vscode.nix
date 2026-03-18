@@ -34,6 +34,7 @@
       "telemetry.telemetryLevel" = "off";
       "workbench.enableExperiments" = false;
       "workbench.settings.enableNaturalLanguageSearch" = false;
+      "workbench.editor.empty.hint" = "hidden";
 
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = lib.getExe pkgs.nil;
