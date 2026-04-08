@@ -2,6 +2,9 @@
   "machines": {
     "fubuki": {
       "installedAt": 1765718005
+    },
+    "vivy": {
+      "installedAt": 1775681353
     }
   }
 }
