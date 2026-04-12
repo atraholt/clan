@@ -1,4 +1,5 @@
 {
+  self,
   config,
   inputs,
   lib,
@@ -16,22 +17,16 @@ let
         --set __VK_LAYER_NV_optimus NVIDIA_only
     ''
   );
-  nixpkgs-unoptimized = import inputs.nixpkgs {
-    system = "x86_64-linux";
-    config = config.nixpkgs.config;
-  };
-  nixpkgs-unoptimized-i686 = import inputs.nixpkgs {
-    system = "i686-linux";
-  };
 in
 {
   imports = [
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
+    "${self}/modules/unoptimized.nix"
+    "${self}/modules/sunshine.nix"
   ];
   boot = {
-    kernelModules = [ "ntsync" ];
     blacklistedKernelModules = [ "uvcvideo" ];
     kernelPackages = lib.mkForce pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto-x86_64-v3;
     kernelParams = [
@@ -68,24 +63,13 @@ in
       substitute = lib.mkForce true;
       max-substitution-jobs = lib.mkForce 2;
       system-features = [
-        "gccarch-x86-64-v3"
+        # "gccarch-x86-64-v3"
+        "gccarch-skylake"
+        "gcctune-skylake"
       ];
     };
   };
   services = {
-    power-profiles-daemon.enable = lib.mkForce false;
-    tlp = {
-      enable = true;
-      pd.enable = true;
-      settings = {
-        START_CHARGE_THRESH_BAT0 = 40;
-        STOP_CHARGE_THRESH_BAT0 = 90;
-      };
-    };
-    udev.extraRules = ''
-      # Allow all users to access ntsync.
-      KERNEL=="ntsync", MODE="0644"
-    '';
     xserver.videoDrivers = [
       "modesetting"
       "nvidia"
@@ -98,118 +82,14 @@ in
     config.nvidia.acceptLicense = true;
     config.cudaSupport = true;
     hostPlatform = {
-      gcc.arch = "x86-64-v3";
-      #gcc.tune = "skylake";
+      #gcc.arch = "x86-64-v3";
+      gcc.tune = "skylake";
+      gcc.arch = "skylake";
       system = "x86_64-linux";
     };
-    overlays =
-      let
-        useUnoptimized-x64 =
-          super: pkgs:
-          lib.lists.foldr (
-            a: b:
-            (lib.attrsets.setAttrByPath [ a ] (lib.attrsets.getAttrFromPath [ a ] nixpkgs-unoptimized.pkgs))
-            // b
-          ) { } pkgs;
-        useUnoptimized-i686 =
-          super: pkgs:
-          lib.lists.foldr (
-            a: b:
-            (lib.attrsets.setAttrByPath [ a ] (
-              lib.attrsets.getAttrFromPath [ a ] nixpkgs-unoptimized-i686.pkgs
-            ))
-            // b
-          ) { } pkgs;
-        useUnoptimized =
-          super: pkgs:
-          if (super.stdenv.system == "x86_64-linux") then
-            (useUnoptimized-x64 super pkgs)
-          else
-            (useUnoptimized-i686 super pkgs);
-
-      in
-      [
-        (
-          final: super:
-          (useUnoptimized super [
-            # These are here because they can be very slow to build
-            "nodejs"
-            "nodejs-slim"
-            "electron"
-            # Some of these don't exist yet, but will help prevent issues when they do
-            #"electron_29"
-            #"electron_30"
-            #"electron_31"
-            #"electron_32"
-            #"electron_33"
-            #"electron_34"
-            #"electron_35"
-            #"electron_36"
-            #"electron_37"
-            #"electron_38"
-            #"electron_39"
-            "electron-unwrapped"
-            #"firefox"
-            #"firefox-bin"
-            "webkitgtk"
-            #"webkitgtk_4_1"
-            #"webkitgtk_5_0"
-            #"webkitgtk_6_0"
-            "llvm"
-            "qtwebengine"
-            "pyside6"
-            "rustc"
-            "rustc-wrapper"
-            #"clang"
-            "ghc"
-            #"ryubing"
-            # Test failure (checkasm) - 02/05/2025
-            #"dav1d"
-            # Fails to build due to expecting BPF support that is apparently not available in clang?? - 02/05/2025
-            #"systemd"
-            # # Fails to build due to aggressive size checks - 02/05/2025
-            #"libtpms"
-            # Fails a test for unknown reason - 02/05/2025
-            #"lib2geom"
-            # Fails to compile due to format overflow - 02/05/2025
-            #"efivar"
-            # Fails a test - 02/04/2025
-            #"graphene"
-            # Fails to find some managed application when building dotnet - 02/04/2025
-            #"ryujinx"
-            # Fails to build a dependency, openexr, that is customized so an override doesn't use the cache - 02/04/2025
-            #"gst_all_1"
-            # Causes a nix parsing stack overflow when using an override for some reason - 5/22/2025
-            #"easyeffects"
-            # TLS dependency fails to build - 5/22/2025
-            #"pandoc"
-            # Test failures - 7/8/2025
-            "assimp"
-            # Build failures - 7/31/2025
-            #"v4l-utils"
-            # Infinite recursion in call depth for nix configs - 8/12/2025
-            #"php"
-            # Takes forever to build
-            #"ollama"
-            # Dependencies have some issues - 10/23/2025
-            #"lutris"
-            # Fails tests - 11/20/2025
-            #"ffmpeg-headless"
-            #"ffmpeg"
-            # Fails tests 04/01/2026
-            # "python3.13-uvloop"
-            # Fails build 04/01/2026
-            #"xivlauncher"
-            # Test fail 16/02/2026
-            #"sdl3"
-            # Build fail 16/02/2026
-            "mesa"
-            # Build fail 09/03/2026
-            "nix"
-          ])
-        )
-        inputs.nix-cachyos-kernel.overlay
-      ];
+    overlays = [
+      inputs.nix-cachyos-kernel.overlay
+    ];
   };
   hardware = {
     graphics = {
