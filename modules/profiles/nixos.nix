@@ -1,15 +1,26 @@
-{ pkgs, inputs, ... }:
+{
+  self,
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 {
   imports = [
     inputs.nix-index-database.nixosModules.nix-index
     inputs.home-manager.nixosModules.home-manager
     inputs.catppuccin.nixosModules.catppuccin
+    inputs.srvos.nixosModules.common
+    #inputs.srvos.nixosModules.mixins-nix-experimental
+    inputs.srvos.nixosModules.mixins-trusted-nix-caches
+    inputs.srvos.nixosModules.mixins-systemd-boot
+    #inputs.srvos.nixosModules.mixins-telegraf
   ];
+  srvos.flake = self;
   boot = {
     initrd.systemd.enable = true;
     kernelPackages = pkgs.pkgs.linuxPackages_latest;
     loader = {
-      timeout = 1;
       systemd-boot = {
         enable = true;
         consoleMode = "0";
@@ -37,12 +48,6 @@
     cpu.intel.updateMicrocode = pkgs.stdenv.isx86_64;
   };
   security = {
-    sudo.enable = false;
-    sudo-rs = {
-      enable = true;
-      execWheelOnly = true;
-      wheelNeedsPassword = false;
-    };
     pam.loginLimits = [
       {
         domain = "*";
@@ -65,8 +70,11 @@
   console = {
     keyMap = "no";
   };
-  systemd.services.nix-daemon = {
-    environment.TMPDIR = "/var/tmp";
+  systemd.services = {
+    "serial-getty@ttyS0".enable = lib.mkForce false;
+    nix-daemon = {
+      environment.TMPDIR = "/var/tmp";
+    };
   };
 
   services = {
@@ -98,5 +106,20 @@
     enable = true;
     flavor = "mocha";
     sddm.enable = true;
+  };
+  fonts = {
+    packages = with pkgs; [
+      udev-gothic-nf
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [
+          "UDEV Gothic NF"
+          "Hack"
+          "Noto Sans Mono"
+        ];
+      };
+    };
   };
 }
