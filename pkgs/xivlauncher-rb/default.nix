@@ -21,6 +21,8 @@
   useSteamRun ? true,
   useGameMode ? false,
   nvngxPath ? "",
+  wine-tkg,
+  dxvk-w64,
 }:
 let
   tag = "1.4.0.1";
@@ -36,7 +38,9 @@ buildDotnetModule rec {
     hash = "sha256-yuZ7sHEWN7v+T/rQwoZiX4RRZicYMjEU7gkQzUDrzTk";
     fetchSubmodules = true;
   };
-
+  # update with:
+  # nix-build -A xivlauncher-rb.updateScript
+  # then run the resulting derivation i.e. /nix/store/XXXX-update-xivlauncher-rb
   passthru.updateScript = writeScript "update-xivlauncher-rb" ''
     #!/usr/bin/env nix-shell
     #!nix-shell -i bash -p nix-update
@@ -56,9 +60,11 @@ buildDotnetModule rec {
     gst-plugins-ugly
     gst-libav
   ];
-
+  # update with:
+  # nix-build -A xivlauncher-rb.passthru.fetch-deps
+  # then run the resulting derivation i.e. /nix/store/XXXX-xivlauncher-rb-1.4.0.1-fetch-deps
   projectFile = "src/XIVLauncher.Core/XIVLauncher.Core.csproj";
-  nugetDeps = ./deps.json; # File generated with `nix-build -A xivlauncher-rb.passthru.fetch-deps`
+  nugetDeps = ./deps.json;
 
   # please do not unpin these even if they match the defaults, xivlauncher is sensitive to .NET versions
   dotnet-sdk = dotnetCorePackages.sdk_10_0;
@@ -104,7 +110,24 @@ buildDotnetModule rec {
       ''
     )
     + ''
-      wrapProgram $out/bin/XIVLauncher.Core --prefix LD_LIBRARY_PATH ":" ${lib.makeLibraryPath runtimeDeps} --prefix GST_PLUGIN_SYSTEM_PATH_1_0 ":" "$GST_PLUGIN_SYSTEM_PATH_1_0" --prefix XL_NVNGXPATH ":" ${nvngxPath}
+      wrapProgram $out/bin/XIVLauncher.Core --prefix LD_LIBRARY_PATH ":" ${lib.makeLibraryPath runtimeDeps} \
+      --prefix GST_PLUGIN_SYSTEM_PATH_1_0 ":" "$GST_PLUGIN_SYSTEM_PATH_1_0" \
+    ''
+    + lib.optionalString (nvngxPath != "") ''
+      --prefix XL_NVNGXPATH ":" ${nvngxPath}) \
+    ''
+    + ''
+      --run '
+      _dxvk="$HOME/.xlcore/compatibilitytool/dxvk/dxvk-gplasync-nix/x64"
+      mkdir -p "$(dirname "$_dxvk")"
+      rsync -auv "${dxvk-w64}/bin/" "$_dxvk"
+      chmod -R u+w $_dxvk
+      _xivwine="$HOME/.xlcore/compatibilitytool/wine/wine-tkg-nixos"
+      mkdir -p "$(dirname "$_xivwine")"
+      if [ "$(readlink "$_xivwine" 2>/dev/null)" != "${wine-tkg}" ]; then
+          ln -sfn "${wine-tkg}" "$_xivwine"
+      fi
+      '
       # the reference to aria2 gets mangled as UTF-16LE and isn't detectable by nix: https://github.com/NixOS/nixpkgs/issues/220065
       mkdir -p $out/nix-support
       echo ${aria2} >> $out/nix-support/depends

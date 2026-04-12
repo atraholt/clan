@@ -77,8 +77,8 @@ in
     umu-launcher
     faugus-launcher
     (self.packages.${pkgs.stdenv.hostPlatform.system}.xivlauncher-rb.override {
-      useGameMode = false;
-      #useSteamRun = false;
+      useGameMode = true;
+      useSteamRun = true;
       nvngxPath = if isNvidia then "${config.hardware.nvidia.package}/lib/nvidia/wine" else "";
     })
     inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wineprefix-preparer
