@@ -1,12 +1,19 @@
 {
   self,
+  inputs,
   config,
   pkgs,
+  lib,
   ...
 }:
+let
+  isNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+in
 {
   imports = [
-
+    inputs.nix-gaming.nixosModules.platformOptimizations
+    inputs.nix-gaming.nixosModules.pipewireLowLatency
+    inputs.nix-gaming.nixosModules.wine
   ];
   programs = {
     steam = {
@@ -27,6 +34,11 @@
       extraCompatPackages = with pkgs; [
         proton-ge-bin
       ];
+      platformOptimizations.enable = true;
+    };
+    gamescope = {
+      enable = true;
+      capSysNice = false;
     };
     gamemode = {
       enable = true;
@@ -49,6 +61,11 @@
         };
       };
     };
+    wine = {
+      enable = true;
+      binfmt = true;
+      ntsync = true;
+    };
     # xivlauncher-rb.enable = true;
   };
   environment.systemPackages = with pkgs; [
@@ -59,28 +76,28 @@
     umu-launcher
     faugus-launcher
     (self.packages.${pkgs.stdenv.hostPlatform.system}.xivlauncher-rb.override {
-      useGameMode = true;
+      useGameMode = false;
       #useSteamRun = false;
-      nvngxPath = "${config.hardware.nvidia.package}/lib/nvidia/wine";
+      nvngxPath = if isNvidia then "${config.hardware.nvidia.package}/lib/nvidia/wine" else "";
     })
+    inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wine-tkg
+    inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wineprefix-preparer
   ];
-  hardware.graphics = {
-    extraPackages = [ pkgs.mangohud ];
-    extraPackages32 = [ pkgs.mangohud ];
-  };
-  services.sunshine = {
-    enable = true;
-    openFirewall = true;
-    capSysAdmin = true;
-    package = pkgs.sunshine.override { cudaSupport = true; };
-    applications = {
-      apps = [
-        {
-          name = "1080p Desktop";
-          exclude-global-prep-cmd = "false";
-          auto-detach = "true";
-        }
-      ];
+  hardware = {
+    graphics = {
+      extraPackages = [ pkgs.mangohud ];
+      extraPackages32 = [ pkgs.mangohud ];
     };
+    steam-hardware.enable = true;
+  };
+  services = {
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      lowLatency.enable = true;
+    };
+    udev.packages = [ pkgs.game-devices-udev-rules ];
   };
 }
