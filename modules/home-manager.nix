@@ -1,5 +1,6 @@
 {
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -16,6 +17,7 @@
       {
         programs.home-manager.enable = true;
       }
+      inputs.plasma-manager.homeModules.plasma-manager
     ];
   };
 }
