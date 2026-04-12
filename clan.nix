@@ -40,6 +40,13 @@
         machineClass = "darwin";
         tags = [ "tui" ];
       };
+      vivy = {
+        tags = [
+          "desktop"
+          "tui"
+          "gaming"
+        ];
+      };
     };
 
     inventory.instances = {
@@ -56,6 +63,7 @@
       #};
       sshd = {
         roles.server.machines.fubuki = { };
+        roles.server.machines.vivy = { };
         roles.server.settings = {
           authorizedKeys = {
             kubira-se = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBC7JOKqvy7mI8KfMfrOVUgpBrMvnpMeQd9QmgPI9P2eyhbqikYe0zkP98Lvc6MIDk1oH3JVrdS51PGQ99Ts0DxI= homelab@secretive.kubira.local";
@@ -113,6 +121,7 @@
           fubuki.settings.host = "192.168.1.122";
           kubira.settings.host = "192.168.1.163";
           reisalin.settings.host = "192.168.1.10";
+          vivy.settings.host = "192.168.1.152";
         };
       };
       #mycelium = {
