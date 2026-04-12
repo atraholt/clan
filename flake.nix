@@ -12,6 +12,8 @@
     nix-casks.url = "github:atahanyorganci/nix-casks/archive";
     nix-gaming.url = "github:fufexan/nix-gaming";
     catppuccin.url = "github:catppuccin/nix";
+    srvos.url = "github:nix-community/srvos";
+    plasma-manager.url = "github:nix-community/plasma-manager";
 
     #nixpkgs.follows = "clan-core/nixpkgs";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +30,9 @@
     nix-gaming.inputs.nixpkgs.follows = "nixpkgs";
     nix-gaming.inputs.flake-parts.follows = "flake-parts";
     catppuccin.inputs.nixpkgs.follows = "nixpkgs";
+    srvos.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.nixpkgs.follows = "nixpkgs";
+    plasma-manager.inputs.home-manager.follows = "home-manager";
   };
 
   outputs =
