@@ -50,6 +50,7 @@ in
           # 20260403 - continues to fail optimised compilation after retesting
           "mesa"
           "assimp"
+          "libtpms"
         ])
       else
         (useUnoptimized-i686 [ ])
