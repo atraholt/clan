@@ -96,6 +96,7 @@ in
   nixpkgs = {
     config.allowUnfree = true;
     config.nvidia.acceptLicense = true;
+    config.cudaSupport = true;
     hostPlatform = {
       gcc.arch = "x86-64-v3";
       #gcc.tune = "skylake";
@@ -214,10 +215,11 @@ in
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
-        intel-compute-runtime
+        # intel-compute-runtime
+        # intel-ocl
         intel-media-driver # LIBVA_DRIVER_NAME=iHD
         intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-        libva-vdpau-driver
+        # libva-vdpau-driver
         libvdpau-va-gl
         nvidia-vaapi-driver
       ];
@@ -244,13 +246,16 @@ in
       users = [ "audun" ];
     };
   };
-  environment.systemPackages = (lib.optionals config.programs.steam.enable [ steam-offload ]) ++ [
-    pkgs.nvtopPackages.full
-    pkgs.clinfo
-    pkgs.libva-utils
-    pkgs.vdpauinfo
-    pkgs.openrazer-daemon
-    pkgs.polychromatic
-  ];
+  powerManagement.cpuFreqGovernor = lib.mkForce "powersave"; # RZ09-036/CH560 suicides in performance governor
+  environment = {
+    systemPackages = (lib.optionals config.programs.steam.enable [ steam-offload ]) ++ [
+      pkgs.nvtopPackages.full
+      pkgs.clinfo
+      pkgs.libva-utils
+      pkgs.vdpauinfo
+      pkgs.openrazer-daemon
+      pkgs.polychromatic
+    ];
+  };
   networking.networkmanager.wifi.backend = "iwd";
 }
