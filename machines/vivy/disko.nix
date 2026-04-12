@@ -2,7 +2,7 @@
   disko.devices = {
     disk = {
       main = {
-        device = "";
+        device = "/dev/disk/by-id/nvme-EXT_X200E_SSD_2102357DWVN0RA197336";
         type = "disk";
         content = {
           type = "gpt";
@@ -14,7 +14,7 @@
             };
             ESP = {
               type = "EF00";
-              size = "500M";
+              size = "1G";
               content = {
                 type = "filesystem";
                 format = "vfat";
