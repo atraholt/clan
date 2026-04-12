@@ -1,13 +1,30 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }:
+let
+  machineName = config.clan.core.machineName;
+  machineTags = config.clan.core.inventory.machines.${machineName}.tags or [ ];
+
+  myLib = {
+    hasTag = tag: builtins.elem tag machineTags;
+    hasAnyTag = candidateTags: lib.any (tag: builtins.elem tag machineTags) candidateTags;
+    hasAllTags = targetTags: lib.all (tag: builtins.elem tag machineTags) targetTags;
+  };
+in
 {
   # Global settings for any system
+  _module.args = {
+    inherit myLib;
+  };
   imports = [
     ../home-manager.nix
   ];
+  nixpkgs = {
+    config.allowUnfree = true;
+  };
   nix = {
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedClass = "idle";
