@@ -63,6 +63,7 @@ in
     };
     wine = {
       enable = true;
+      package = inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wine-tkg;
       binfmt = true;
       ntsync = true;
     };
@@ -80,7 +81,6 @@ in
       #useSteamRun = false;
       nvngxPath = if isNvidia then "${config.hardware.nvidia.package}/lib/nvidia/wine" else "";
     })
-    inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wine-tkg
     inputs.nix-gaming.packages.${pkgs.stdenv.hostPlatform.system}.wineprefix-preparer
   ];
   hardware = {
